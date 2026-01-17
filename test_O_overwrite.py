@@ -5,6 +5,9 @@ from systest import simple_edit_test, syntax_error
 def test_no_leading_parameter():
     simple_edit_test("o/overwrite/", "abcdefghij\n", "overwritej\n")
 
+def test_no_leading_parameter_past_end():
+    simple_edit_test("o/overwrite/", "abc\n", "overwrite\n")
+
 def test_plus_leading_parameter():
     simple_edit_test("o/overwrite/", "abc\n", "overwrite\n")
 
