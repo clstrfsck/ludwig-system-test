@@ -27,6 +27,9 @@ def test_negative_leading_parameter():
 def test_equals_leading_parameter():
     simple_edit_test("i/deleted/=di/m1/", "a\nb\n", "m1a\nb\n")
 
+def test_equals_leading_parameter_2():
+    simple_edit_test("2jj=d", "abc\n", "ab\n")
+
 def test_bol_leading_parameter():
     simple_edit_test("i/deleted/<d", "abcd\nb\n", "abcd\nb\n")
 
