@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 ludwig_envs = ["LUDWIG_EXE", "LUDWIG_PATH"]
+search_suffixes = ["src/ludwig", "build/ludwig", "ludwig"]
 
 def _compute_ludwig_path() -> Path:
     use_path = None
@@ -13,9 +14,16 @@ def _compute_ludwig_path() -> Path:
             use_path = Path(os.path.expandvars(env)).expanduser()
             break
     if not use_path:
-        use_path = Path(__file__).parent.parent / "src" / "ludwig"
-        if not use_path.exists():
-            use_path = Path(__file__).parent.parent / "ludwig"
+        for suffix in search_suffixes:
+            candidate = Path(__file__).parent.parent / suffix
+            if candidate.exists():
+                use_path = candidate
+                break
+    if not use_path:
+        raise FileNotFoundError(
+            f"Ludwig executable not found. "
+            f"Set one of {ludwig_envs} to the correct executable path."
+        )
     # normalize but don't require the file to exist during resolution
     use_path = use_path.resolve(strict=False)
 
