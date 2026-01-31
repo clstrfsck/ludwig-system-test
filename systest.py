@@ -49,7 +49,7 @@ def run_pexpect(
     argv: Optional[Sequence[str]] = None,
     timeout: int = 10,
     env: Optional[dict] = {},
-) -> Tuple[Dict[str, str], int]:
+) -> Tuple[Dict[str, str], int|None, int|None]:
     """Create a temporary sandbox, write `files_map`, run `executable`, then feed cmds into the pty.
 
     Returns `(files_after_map, returncode)`.
@@ -84,7 +84,7 @@ def run_pexpect(
         child.close()
 
         files_after = _collect_files(td)
-        return files_after, child.exitstatus or -1
+        return files_after, child.exitstatus, child.signalstatus
 
 
 def run_in_sandbox(
@@ -189,7 +189,7 @@ def simple_pexpect_test(
     argv: Optional[Sequence[str]] = None,
     env: Optional[dict] = None,
 ) -> None:
-    files, exit = run_pexpect(
+    files, exitstatus, signalstatus = run_pexpect(
         { "test_file": infile },
         cmd,
         executable=ludwig_path(),
@@ -199,7 +199,7 @@ def simple_pexpect_test(
     assert files.keys() == {"test_file", "test_file~1"}
     assert files["test_file"] == outfile
     assert files["test_file~1"] == infile
-    assert exit == 0
+    assert exitstatus == 0
 
 def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None) -> None:
     inlines = infile.count('\n')
