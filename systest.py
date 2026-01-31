@@ -1,7 +1,11 @@
 import os
 import re
+import shlex
 import subprocess
+import sys
 import tempfile
+
+import pexpect
 from conftest import ludwig_path
 from pathlib import Path
 from typing import Dict, Tuple, Optional, Sequence
@@ -37,6 +41,50 @@ def _collect_files(base_path: str) -> Dict[str, str]:
                 with open(full, "rb") as f:
                     out[rel] = f.read().decode("latin-1")
     return out
+
+def run_pexpect(
+    files_map: Dict[str, str],
+    cmds: str,
+    executable: Path,
+    argv: Optional[Sequence[str]] = None,
+    timeout: int = 10,
+    env: Optional[dict] = {},
+) -> Tuple[Dict[str, str], int]:
+    """Create a temporary sandbox, write `files_map`, run `executable`, then feed cmds into the pty.
+
+    Returns `(files_after_map, returncode)`.
+
+    Parameters
+    - `files_map`: mapping of relative paths -> initial file contents to create inside the sandbox
+    - `cmds`: string to send to the child process's input
+    - `executable`: path to executable inside the sandbox (e.g. './prog.py') or absolute path
+    - `argv`: optional sequence of additional command-line arguments (not including the executable)
+    - `env`: if `None`, child inherits parent env; if provided (including `{}`), the child will use that env
+    """
+
+    with tempfile.TemporaryDirectory() as td:
+        _write_files(td, files_map)
+        cmd: Sequence[str]
+        if argv:
+            cmd = [str(executable), "-M", "-I"] + list(argv)
+        else:
+            cmd = [str(executable), "-M", "-I"]
+
+        child = pexpect.spawn(
+            shlex.join(cmd),
+            cwd=td,
+            timeout=timeout,
+            encoding='utf-8',
+            searchwindowsize=1024
+        )
+
+        child.expect("LUDWIG")
+        child.send(cmds)
+        child.expect(pexpect.EOF)
+        child.close()
+
+        files_after = _collect_files(td)
+        return files_after, child.exitstatus or -1
 
 
 def run_in_sandbox(
@@ -133,6 +181,25 @@ def simple_edit_test(
         argv,
         env
     )
+
+def simple_pexpect_test(
+    cmd: str,
+    infile: str,
+    outfile: str,
+    argv: Optional[Sequence[str]] = None,
+    env: Optional[dict] = None,
+) -> None:
+    files, exit = run_pexpect(
+        { "test_file": infile },
+        cmd,
+        executable=ludwig_path(),
+        argv=(list(argv) if argv else []) + [ "test_file" ],
+        env=env
+    )
+    assert files.keys() == {"test_file", "test_file~1"}
+    assert files["test_file"] == outfile
+    assert files["test_file~1"] == infile
+    assert exit == 0
 
 def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None) -> None:
     inlines = infile.count('\n')
