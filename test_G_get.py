@@ -505,6 +505,12 @@ def test_string_concatenation_middle():
 def test_mark_n_left_middle():
     simple_edit_test("2jm<jg`@1N`=di/|/", "ab1c\n", "ab|c\n")
 
+def test_mark_n_left_middle_equals():
+    simple_edit_test("2j<jg`=N`=di/|/", "ab1c\n", "ab|c\n")
+
+def test_mark_n_left_middle_percent():
+    simple_edit_test("ji/b/<jg`%N`=di/|/", "a1c\n", "ab|c\n")
+
 def test_mark_n_left_middle_no_match():
     command_failed("g`@1N`", "ab1c\n")
 
