@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 ludwig_envs = ["LUDWIG_EXE", "LUDWIG_PATH"]
-search_suffixes = ["src/ludwig", "build/ludwig", "ludwig"]
+search_suffixes = ["src/ludwig", "build/ludwig", "bin/ludwig-debug", "bin/ludwig", "ludwig"]
 
 def _compute_ludwig_path() -> Path:
     use_path = None
