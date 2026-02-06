@@ -13,3 +13,9 @@ def test_n_leading_parameter():
 
 def test_minus_leading_parameter():
     syntax_error("-i/insert/", "")
+
+def test_insert_multi_line_2():
+    simple_edit_test("i/insert\nline2/", "", "insert\nline2\n")
+
+def test_insert_multi_line_3():
+    simple_edit_test("i/insert\nline2\nline3/", "", "insert\nline2\nline3\n")
