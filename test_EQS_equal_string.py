@@ -3,10 +3,13 @@ from systest import simple_edit_test, syntax_error
 #  LEADING PARAMETER: [none, + , - ,    ,    , > , < ,   ] EQS
 
 def test_no_leading_parameter():
-    simple_edit_test("eqs/abc/[i/yes/:i/no/]", "ABCabc\n", "yesABCabc\n")
+    simple_edit_test("eqs/aBc/[i/yes/:i/no/]", "ABCabc\n", "yesABCabc\n")
 
 def test_no_leading_parameter_exact():
     simple_edit_test("eqs\"ABC\"[i/yes/:i/no/]", "ABCabc\n", "yesABCabc\n")
+
+def test_no_leading_parameter_exact_fail():
+    simple_edit_test("eqs\"abc\"[i/yes/:i/no/]", "ABCabc\n", "noABCabc\n")
 
 def test_no_leading_parameter_fail():
     simple_edit_test("eqs\"XYZ\"[i/yes/:i/no/]", "ABCabc\n", "noABCabc\n")
