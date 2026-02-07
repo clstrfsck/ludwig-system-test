@@ -5,6 +5,9 @@ from systest import simple_edit_test
 def test_no_leading_parameter():
     simple_edit_test(">jzbi/b/", "12345678901234567890\n", "1234567890123456b7890\n")
 
+def test_no_leading_parameter_at_left():
+    simple_edit_test("zb[i/pass/:i/fail/]", "12345678901234567890\n", "fail12345678901234567890\n")
+
 def test_plus_leading_parameter():
     simple_edit_test(">j+zbi/b/", "12345678901234567890\n", "1234567890123456b7890\n")
 
