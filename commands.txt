@@ -1,0 +1,113 @@
+ Old command set
+
+ Symbol  Name                   Test file
+ ----------------------------------------------------------------------------
+  A      Advance                test_A_advance.py
+  BR     Bridge                 test_BR_bridge.py
+  C      Character insert       test_C_insert_character.py
+  D      Delete                 test_D_delete.py
+  ED     Edit frame             test_ED_edit_frame.py
+  EK     Kill Edit frame        test_EK_kill_edit_frame.py
+  EN     Execute Norecompile
+  EOL    End Of Line            test_EOL_end_of_line.py
+  EOP    End Of Page
+  EOF    End Of File            test_EOF_end_of_file.py
+  EP     Edit Parameters        test_EP_introducer.py (needs more)
+  EQC    Equal Column           test_EQC_equal_column.py
+  EQM    Equal Mark             test_EQM_equal_mark.py
+  EQS    Equal String           test_EQS_equal_string.py
+  ER     Edit Return            test_ER_edit_return.py
+  EX     Execute
+  FB     File Back
+  FE     File Edit
+  FGB    Global File Back
+  FGI    Global Input File
+  FGK    Global File Kill
+  FGO    Global Output File
+  FGR    Global File Read
+  FGW    Global File Write
+  FI     File Input
+  FK     File Kill
+  FO     File Output
+  FP     File Page
+  FS     File Save
+  FT     File Table             test_FT_file_table.py
+  FX     File Execute
+  G      Get                    test_G_get.py
+  H      Help
+  I      Insert                 test_I_insert.py
+  J      Jump                   test_J_jump.py
+  K      Kill                   test_K_kill.py
+  L      Insert Line            test_L_lines.py
+  M      Mark
+  N      Next Character         test_N_next.py
+  O      Overtype               test_O_overwrite.py
+  Q      Quit
+  R      Replace                test_R_replace.py
+  SA     Span Assign            test_SA_span_assign.py
+  SC     Span Copy              test_SC_span_copy.py
+  SD     Span Define            test_SD_span_define.py
+  SI     Span Index             test_SI_span_index.py
+  SJ     Span Jump
+  SL     Split Line             test_SL_split_line.py
+  SR     Span Recompile
+  ST     Span Transfer
+  SW     Swap Line              test_SW_swap_line.py
+  UC     Command Introducer
+  UK     Key Mapping
+  UP     Parent Process
+  US     Subprocess
+  V      Verify                 test_V_verify.py
+  WB     Window Back
+  WE     Window End
+  WF     Window Forward
+  WH     Window Height
+  WL     Window Left
+  WM     Window Middle
+  WN     New Window
+  WR     Window Right
+  WS     Window Scroll
+  WT     Window Top
+  WU     Window Update
+  YA     Word Advance           test_YA_word_advance.py
+  YC     Centre Line            test_YC_centre_line.py
+  YD     Word Delete            test_YD_word_delete.py
+  YF     Word Fill              test_YF_line_fill.py
+  YJ     Line Justify           test_YJ_line_justify.py
+  YL     Align Left             test_YL_align_left.py
+  YR     Align Right            test_YR_align_right.py
+  YS     Word Squeeze           test_YS_word_squeeze.py
+  XA     Exit Abort
+  XS     Exit success
+  XF     Exit Failure
+  ZB     Backtab                test_ZB_backtab.py
+  ZC     Carriage Return        test_ZC_carriage_return.py
+  ZD     Cursor Down            test_ZD_cursor_down.py
+  ZH     Cursor Home            test_ZH_cursor_home.py
+  ZL     Cursor Left            test_ZL_cursor_left.py
+  ZR     Cursor Right           test_ZR_cursor_right.py
+  ZT     Tab                    test_ZT_tab.py
+  ZU     Cursor Up              test_ZU_cursor_up.py
+  ZZ     Delete                 test_ZZ_delete.py
+  \      Command
+  ^      Execute String
+  (      Direct Entry
+  "      Ditto                  test_QD_ditto.py
+  '      Ditto from below       test_QS_ditto_below.py
+  *      Case Change
+  {      Left Margin
+  }      Right Margin
+  ?      Invisible Insert
+
+
+ New command set
+
+ Symbol  Name                   Test file
+ ----------------------------------------------------------------------------
+   AP    Advance Paragraph      (undocumented)
+   AW    Advance Word           test_AW_advance_word.py
+   DP    Delete Paragraph       (undocumented)
+   DW    Delete Word            test_DW_delete_word.py
+   PC    Position in Column     test_PC_position_in_column.py
+   PL    Position in Line       test_PL_position_in_line.py
+   OX    Operating System Cmd
