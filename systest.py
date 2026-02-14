@@ -227,7 +227,7 @@ def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None)
         assert out[0].endswith(f"/test_file closed ({inlines} lines read).")
     assert err == []
 
-def _failed_edit(cmd: str, infile: str, what: str, argv: Optional[Sequence[str]] = None) -> None:
+def failed_edit(cmd: str, infile: str, whats: list[str], argv: Optional[Sequence[str]] = None) -> None:
     inlines = infile.count('\n')
     files, exit, out, err = run_in_sandbox(
         { "test_file": infile },
@@ -237,16 +237,18 @@ def _failed_edit(cmd: str, infile: str, what: str, argv: Optional[Sequence[str]]
     assert files.keys() == {"test_file"}
     assert files["test_file"] == infile
     assert exit == 0
-    assert len(out) == 2
-    assert out[0].strip().endswith(what)
+    assert len(out) == len(whats) + 1
+
+    for i, what in enumerate(whats):
+        assert out[i].strip().endswith(what)
     if inlines == 1:
-        assert out[1].endswith(f"/test_file closed (1 line read).")
+        assert out[len(whats)].endswith(f"/test_file closed (1 line read).")
     else:
-        assert out[1].endswith(f"/test_file closed ({inlines} lines read).")
+        assert out[len(whats)].endswith(f"/test_file closed ({inlines} lines read).")
     assert err == []
 
 def syntax_error(cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None) -> None:
-    _failed_edit(cmd, infile, "Syntax error.", argv)
+    failed_edit(cmd, infile, ["Syntax error."], argv)
 
 def command_failed(cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None) -> None:
-    _failed_edit(cmd, infile, "COMMAND FAILED", argv)
+    failed_edit(cmd, infile, ["COMMAND FAILED"], argv)

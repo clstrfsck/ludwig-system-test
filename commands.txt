@@ -39,7 +39,7 @@
   J      Jump                   test_J_jump.py
   K      Kill                   test_K_kill.py
   L      Insert Line            test_L_lines.py
-  M      Mark
+  M      Mark                   test_M_mark.py
   N      Next Character         test_N_next.py
   O      Overtype               test_O_overwrite.py
   Q      Quit
@@ -48,10 +48,10 @@
   SC     Span Copy              test_SC_span_copy.py
   SD     Span Define            test_SD_span_define.py
   SI     Span Index             test_SI_span_index.py
-  SJ     Span Jump
+  SJ     Span Jump              test_SJ_span_jump.py
   SL     Split Line             test_SL_split_line.py
   SR     Span Recompile
-  ST     Span Transfer
+  ST     Span Transfer          test_ST_span_transfer.py
   SW     Swap Line              test_SW_swap_line.py
   UC     Command Introducer
   UK     Key Mapping
