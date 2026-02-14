@@ -49,10 +49,10 @@ def run_pexpect(
     argv: Optional[Sequence[str]] = None,
     timeout: int = 10,
     env: Optional[dict] = {},
-) -> Tuple[Dict[str, str], int|None, int|None]:
+) -> Tuple[Dict[str, str], int|None, int|None, str]:
     """Create a temporary sandbox, write `files_map`, run `executable`, then feed cmds into the pty.
 
-    Returns `(files_after_map, returncode)`.
+    Returns `(files_after_map, returncode, output)`.
 
     Parameters
     - `files_map`: mapping of relative paths -> initial file contents to create inside the sandbox
@@ -81,10 +81,16 @@ def run_pexpect(
         child.expect("LUDWIG")
         child.send(cmds)
         child.expect(pexpect.EOF)
+        output = child.before
         child.close()
 
+        if output is None:
+            output = ""
+        elif isinstance(output, bytes):
+            output = output.decode('utf-8')
+
         files_after = _collect_files(td)
-        return files_after, child.exitstatus, child.signalstatus
+        return files_after, child.exitstatus, child.signalstatus, output
 
 
 def run_in_sandbox(
@@ -186,10 +192,11 @@ def simple_pexpect_test(
     cmd: str,
     infile: str,
     outfile: str,
+    wantedOutput: Optional[str] = None,
     argv: Optional[Sequence[str]] = None,
     env: Optional[dict] = None,
 ) -> None:
-    files, exitstatus, signalstatus = run_pexpect(
+    files, exitstatus, signalstatus, output = run_pexpect(
         { "test_file": infile },
         cmd,
         executable=ludwig_path(),
@@ -200,6 +207,8 @@ def simple_pexpect_test(
     assert files["test_file"] == outfile
     assert files["test_file~1"] == infile
     assert exitstatus == 0
+    if wantedOutput is not None:
+        assert re.search(wantedOutput, output, re.RegexFlag.MULTILINE)
 
 def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None) -> None:
     inlines = infile.count('\n')

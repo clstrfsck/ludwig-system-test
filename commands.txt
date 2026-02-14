@@ -34,7 +34,7 @@
   FT     File Table             test_FT_file_table.py
   FX     File Execute
   G      Get                    test_G_get.py
-  H      Help
+  H      Help                   test_H_help.py
   I      Insert                 test_I_insert.py
   J      Jump                   test_J_jump.py
   K      Kill                   test_K_kill.py
@@ -94,7 +94,7 @@
   (      Direct Entry
   "      Ditto                  test_QD_ditto.py
   '      Ditto from below       test_QS_ditto_below.py
-  *      Case Change
+  *      Case Change            test_AST_case_change.py
   {      Left Margin
   }      Right Margin
   ?      Invisible Insert
