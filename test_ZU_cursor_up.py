@@ -13,3 +13,6 @@ def test_positive_leading_parameter():
 
 def test_positive_leading_parameter_split():
     simple_edit_test(">a>zui/m1/", "a\nb\nc\n", "m1a\nb\nc\n")
+
+def test_up_fails_at_bof():
+    simple_edit_test("zu[i/yes/:i/no/]", "a\nb\nc\n", "noa\nb\nc\n")

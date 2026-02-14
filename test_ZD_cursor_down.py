@@ -13,3 +13,6 @@ def test_positive_leading_parameter():
 
 def test_positive_leading_parameter_split():
     simple_edit_test(">zdi/m1/", "a\nb\nc\n", "a\nb\nc\nm1\n")
+
+def test_down_fails_at_eof():
+    simple_edit_test(">azd[i/yes/:i/no/]", "a\nb\nc\n", "a\nb\nc\nno\n")
