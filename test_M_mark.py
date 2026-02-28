@@ -11,4 +11,9 @@ def test_all_leading_parameters():
 
 def test_minus_leading_parameters():
     for i in range(1, 10):
-        simple_edit_test(f"13j{i}m<a-{i}m@j[i/yes/:i/no/]", "abcdefghijklmnopqrstuvwxyz\n", "noabcdefghijklmnopqrstuvwxyz\n")
+        simple_edit_test(
+            f"13j{i}m<a-{i}m@j[i/yes/:i/no/]",
+            "abcdefghijklmnopqrstuvwxyz\n",
+            "noabcdefghijklmnopqrstuvwxyz\n",
+            extra_stdout=[r"^Mark Not Defined\."]
+        )

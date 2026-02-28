@@ -174,16 +174,20 @@ def simple_edit_test(
     outfile: str,
     argv: Optional[Sequence[str]] = None,
     env: Optional[dict] = None,
+    extra_stdout: Optional[Sequence[str]] = None,
 ) -> None:
     inlines = infile.count('\n')
     outlines = outfile.count('\n')
     read_lines = re.escape(f"/test_file closed ({inlines} line{'s' if inlines != 1 else ''} read).") + r"\Z"
     written_lines = re.escape(f"/test_file created ({outlines} line{'s' if outlines != 1 else ''} written).") + r"\Z"
+    all_stdout = [read_lines, written_lines]
+    if extra_stdout:
+        all_stdout = list(extra_stdout) + all_stdout
     multi_file_edit_test(
         cmd,
         { "test_file": infile },
         { "test_file": outfile, "test_file~1": infile },
-        [read_lines, written_lines],
+        all_stdout,
         argv,
         env
     )
