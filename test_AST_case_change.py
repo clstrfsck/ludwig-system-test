@@ -1,4 +1,5 @@
 from systest import simple_edit_test
+import pytest
 
 # LEADING PARAMETER: [none, + , - , +n , -n , > , < ,   ] '
 
@@ -38,6 +39,7 @@ def test_minus_leading_parameter_e():
 def test_minus_leading_parameter_eeee():
     simple_edit_test(">j-*e-*e-*e-*ei/m1/", "abcd\n", "m1Abcd\n")
 
+@pytest.mark.skip(reason="This test tests buggy behaviour fixed in the rust version")
 def test_zero_leading_parameter():
     # Buggy: should not mark file as modified.
     simple_edit_test("0*u", "a\n", "a\n")

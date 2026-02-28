@@ -1,4 +1,5 @@
 from systest import simple_edit_test
+import pytest
 
 # Not really a swap.  More of a move.
 # LEADING PARAMETER: [none, + , - , +n , -n , > , < , @ ] SW
@@ -12,6 +13,7 @@ def test_plus_leading_parameter():
 def test_minus_leading_parameter():
     simple_edit_test("a-sw", "a\nb\n", "b\na\n")
 
+@pytest.mark.skip(reason="This test tests buggy behaviour fixed in the rust version")
 def test_zero_leading_parameter():
     # This might be buggy.  Probably should not modify the file.
     simple_edit_test("0sw", "a\nb\n", "a\nb\n")

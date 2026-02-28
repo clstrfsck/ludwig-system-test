@@ -1,4 +1,5 @@
 from systest import simple_edit_test, syntax_error
+import pytest
 
 # LEADING PARAMETER: [none, + , - , +n , -n ,   ,   ,   ] C
 
@@ -12,7 +13,9 @@ def test_plus_leading_parameter():
 def test_minus_leading_parameter():
     simple_edit_test("-ci/m1/", "a\nb\n", " m1a\nb\n")
 
+@pytest.mark.skip(reason="This test tests buggy behaviour fixed in the rust version")
 def test_zero_leading_parameter():
+    # Should not mark the file as modified, as zero characters are inserted.
     simple_edit_test("0c", "a\nb\n", "a\nb\n")
 
 def test_positive_leading_parameter():

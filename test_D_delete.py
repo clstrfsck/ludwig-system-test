@@ -1,4 +1,5 @@
 from systest import simple_edit_test
+import pytest
 
 # LEADING PARAMETER: [none, + , - , +n , -n , > , < , @ ] D
 
@@ -12,6 +13,7 @@ def test_plus_leading_parameter():
 def test_minus_leading_parameter():
     simple_edit_test("i/m1/-d", "a\nb\n", "ma\nb\n")
 
+@pytest.mark.skip(reason="This test tests buggy behaviour fixed in the rust version")
 def test_zero_leading_parameter():
     # I think this is buggy.  It should not modify the file.
     # This should work correctly:

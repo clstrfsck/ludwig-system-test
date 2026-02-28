@@ -11,4 +11,4 @@ def test_all_leading_parameters():
 
 def test_minus_leading_parameters():
     for i in range(1, 10):
-        failed_edit(f"13j{i}m<a-{i}m@j", "abcdefghijklmnopqrstuvwxyz\n", ["Mark Not Defined.", "COMMAND FAILED"])
+        simple_edit_test(f"13j{i}m<a-{i}m@j[i/yes/:i/no/]", "abcdefghijklmnopqrstuvwxyz\n", "noabcdefghijklmnopqrstuvwxyz\n")
