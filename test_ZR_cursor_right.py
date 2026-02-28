@@ -11,5 +11,15 @@ def test_plus_leading_parameter():
 def test_positive_leading_parameter():
     simple_edit_test("2zri/m1/", "abc\nb\n", "abm1c\nb\n")
 
-def test_positive_leading_parameter_split():
+def test_pindef_leading_parameter():
     simple_edit_test("ep/m=(1,10)/>zri/m1/", "abc\nb\n", "abc      m1\nb\n")
+
+def test_pindef_leading_parameter_fail_at_margin():
+    simple_edit_test("ep/m=(1,10)/10j>zr[i/yes/:i/no/]", "abc\nb\n", "abc       no\nb\n")
+
+def test_pindef_leading_parameter_fail_beyond_margin():
+    simple_edit_test(
+        "ep/m=(1,10)/20j>zr[i/yes/:i/no/]",
+        "abc\nb\n",
+        "abc                 no\nb\n"
+    )
