@@ -50,7 +50,7 @@ def run_pexpect(
     executable: Path,
     argv: Optional[Sequence[str]] = None,
     timeout: int = 10,
-    env: Optional[dict] = {},
+    env: Optional[dict[str, str]] = {},
 ) -> Tuple[Dict[str, str], int | None, int | None, str]:
     """Create a temporary sandbox, write `files_map`, run `executable`, then feed cmds into the pty.
 
@@ -72,13 +72,14 @@ def run_pexpect(
         else:
             cmd = [str(executable), "-M", "-I"]
 
+        child_env = {"TERM": "xterm"} if env is None else {"TERM": "xterm", **env}
         child = pexpect.spawn(
             shlex.join(cmd),
             cwd=td,
             timeout=timeout,
             encoding="utf-8",
             searchwindowsize=1024,
-            env={"TERM": "xterm"},
+            env=child_env,  # type: ignore[arg-type]
         )
 
         child.expect("LUDWIG")
@@ -102,7 +103,7 @@ def run_in_sandbox(
     executable: Path,
     argv: Optional[Sequence[str]] = None,
     timeout: int = 10,
-    env: Optional[dict] = {},
+    env: Optional[dict[str, str]] = {},
 ) -> Tuple[Dict[str, str], int, list[str], list[str]]:
     """Create a temporary sandbox, write `files_map`, run `executable` with `stdin`.
 
