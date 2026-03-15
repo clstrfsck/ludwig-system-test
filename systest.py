@@ -4,11 +4,12 @@ import shlex
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
+from typing import Dict, Optional, Sequence, Tuple
 
 import pexpect
 from conftest import ludwig_path
-from pathlib import Path
-from typing import Dict, Tuple, Optional, Sequence
+
 
 def _write_files(base_path: str, files: Dict[str, str]) -> None:
     for relpath, content in files.items():
@@ -42,6 +43,7 @@ def _collect_files(base_path: str) -> Dict[str, str]:
                     out[rel] = f.read().decode("latin-1")
     return out
 
+
 def run_pexpect(
     files_map: Dict[str, str],
     cmds: str,
@@ -49,7 +51,7 @@ def run_pexpect(
     argv: Optional[Sequence[str]] = None,
     timeout: int = 10,
     env: Optional[dict] = {},
-) -> Tuple[Dict[str, str], int|None, int|None, str]:
+) -> Tuple[Dict[str, str], int | None, int | None, str]:
     """Create a temporary sandbox, write `files_map`, run `executable`, then feed cmds into the pty.
 
     Returns `(files_after_map, returncode, output)`.
@@ -74,8 +76,9 @@ def run_pexpect(
             shlex.join(cmd),
             cwd=td,
             timeout=timeout,
-            encoding='utf-8',
-            searchwindowsize=1024
+            encoding="utf-8",
+            searchwindowsize=1024,
+            env={"TERM": "xterm"},
         )
 
         child.expect("LUDWIG")
@@ -87,7 +90,7 @@ def run_pexpect(
         if output is None:
             output = ""
         elif isinstance(output, bytes):
-            output = output.decode('utf-8')
+            output = output.decode("utf-8")
 
         files_after = _collect_files(td)
         return files_after, child.exitstatus, child.signalstatus, output
@@ -137,6 +140,7 @@ def run_in_sandbox(
         err = proc.stderr.decode("utf-8", errors="replace")
         return files_after, returncode, out.splitlines(), err.splitlines()
 
+
 def multi_file_edit_test(
     cmd: str,
     infiles: dict[str, str],
@@ -148,8 +152,9 @@ def multi_file_edit_test(
     files, exit, out, err = run_in_sandbox(
         infiles,
         cmd,
-        ludwig_path(), (list(argv) if argv else []) + [ "test_file" ],
-        env=env
+        ludwig_path(),
+        (list(argv) if argv else []) + ["test_file"],
+        env=env,
     )
     assert files.keys() == outfiles.keys()
     for k in outfiles.keys():
@@ -168,6 +173,7 @@ def multi_file_edit_test(
         assert re.search(out_expected, out_got)
     assert err == []
 
+
 def simple_edit_test(
     cmd: str,
     infile: str,
@@ -176,21 +182,32 @@ def simple_edit_test(
     env: Optional[dict] = None,
     extra_stdout: Optional[Sequence[str]] = None,
 ) -> None:
-    inlines = infile.count('\n')
-    outlines = outfile.count('\n')
-    read_lines = re.escape(f"/test_file closed ({inlines} line{'s' if inlines != 1 else ''} read).") + r"\Z"
-    written_lines = re.escape(f"/test_file created ({outlines} line{'s' if outlines != 1 else ''} written).") + r"\Z"
+    inlines = infile.count("\n")
+    outlines = outfile.count("\n")
+    read_lines = (
+        re.escape(
+            f"/test_file closed ({inlines} line{'s' if inlines != 1 else ''} read)."
+        )
+        + r"\Z"
+    )
+    written_lines = (
+        re.escape(
+            f"/test_file created ({outlines} line{'s' if outlines != 1 else ''} written)."
+        )
+        + r"\Z"
+    )
     all_stdout = [read_lines, written_lines]
     if extra_stdout:
         all_stdout = list(extra_stdout) + all_stdout
     multi_file_edit_test(
         cmd,
-        { "test_file": infile },
-        { "test_file": outfile, "test_file~1": infile },
+        {"test_file": infile},
+        {"test_file": outfile, "test_file~1": infile},
         all_stdout,
         argv,
-        env
+        env,
     )
+
 
 def simple_pexpect_test(
     cmd: str,
@@ -201,11 +218,11 @@ def simple_pexpect_test(
     env: Optional[dict] = None,
 ) -> None:
     files, exitstatus, signalstatus, output = run_pexpect(
-        { "test_file": infile },
+        {"test_file": infile},
         cmd,
         executable=ludwig_path(),
-        argv=(list(argv) if argv else []) + [ "test_file" ],
-        env=env
+        argv=(list(argv) if argv else []) + ["test_file"],
+        env=env,
     )
     assert files.keys() == {"test_file", "test_file~1"}
     assert files["test_file"] == outfile
@@ -214,12 +231,16 @@ def simple_pexpect_test(
     if wantedOutput is not None:
         assert re.search(wantedOutput, output, re.RegexFlag.MULTILINE)
 
-def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None) -> None:
-    inlines = infile.count('\n')
+
+def unmodified_test(
+    cmd: str, infile: str, argv: Optional[Sequence[str]] = None
+) -> None:
+    inlines = infile.count("\n")
     files, exit, out, err = run_in_sandbox(
-        { "test_file": infile },
+        {"test_file": infile},
         cmd,
-        ludwig_path(), (list(argv) if argv else []) + [ "test_file" ]
+        ludwig_path(),
+        (list(argv) if argv else []) + ["test_file"],
     )
     assert files.keys() == {"test_file"}
     assert files["test_file"] == infile
@@ -231,12 +252,16 @@ def unmodified_test(cmd: str, infile: str, argv: Optional[Sequence[str]] = None)
         assert out[0].endswith(f"/test_file closed ({inlines} lines read).")
     assert err == []
 
-def failed_edit(cmd: str, infile: str, whats: list[str], argv: Optional[Sequence[str]] = None) -> None:
-    inlines = infile.count('\n')
+
+def failed_edit(
+    cmd: str, infile: str, whats: list[str], argv: Optional[Sequence[str]] = None
+) -> None:
+    inlines = infile.count("\n")
     files, exit, out, err = run_in_sandbox(
-        { "test_file": infile },
+        {"test_file": infile},
         cmd,
-        ludwig_path(), (list(argv) if argv else []) + [ "test_file" ]
+        ludwig_path(),
+        (list(argv) if argv else []) + ["test_file"],
     )
     assert files.keys() == {"test_file"}
     assert files["test_file"] == infile
@@ -251,8 +276,14 @@ def failed_edit(cmd: str, infile: str, whats: list[str], argv: Optional[Sequence
         assert out[len(whats)].endswith(f"/test_file closed ({inlines} lines read).")
     assert err == []
 
-def syntax_error(cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None) -> None:
+
+def syntax_error(
+    cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None
+) -> None:
     failed_edit(cmd, infile, ["Syntax error."], argv)
 
-def command_failed(cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None) -> None:
+
+def command_failed(
+    cmd: str, infile: str = "", argv: Optional[Sequence[str]] = None
+) -> None:
     failed_edit(cmd, infile, ["COMMAND FAILED"], argv)
